@@ -60,6 +60,26 @@ st.markdown(
         font-family: 'Open Sans Hebrew', sans-serif !important;
     }
     
+    /* Fix expander header alignment */
+    div[data-testid="stExpander"] summary {
+        direction: rtl !important;
+        display: flex !important;
+        flex-direction: row-reverse !important;
+        justify-content: flex-start !important;
+        align-items: center !important;
+    }
+    
+    div[data-testid="stExpander"] summary svg {
+        margin-left: 0.5rem !important;
+        margin-right: 0 !important;
+        order: -1 !important;
+    }
+    
+    div[data-testid="stExpander"] summary p {
+        flex: 1 !important;
+        text-align: right !important;
+    }
+    
     /* Debug info styling */
     .debug-box {
         background-color: #f0f2f6;
