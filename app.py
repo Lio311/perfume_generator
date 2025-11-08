@@ -94,10 +94,12 @@ st.markdown(
     div[data-testid="stExpander"] summary > div:last-child:not(:first-child) {
         display: none !important;
     }
+    
+    /* *** התיקון שהוספתי *** */
     /* More aggressive fix for "key" text */
-        div[data-testid="stExpander"] summary > div:nth-of-type(2) {
-            display: none !important;
-        }
+    div[data-testid="stExpander"] summary > div:nth-of-type(2) {
+        display: none !important;
+    }
     
     /* Debug info styling */
     .debug-box {
@@ -166,24 +168,6 @@ st.markdown(
 
 st.title("מחולל תיאורי מוצר (גרסה משופרת) 🖋️")
 
-# Show API status
-with st.expander("סטטוס API ומכסות 📊", expanded=False):
-    try:
-        st.caption("בודק מודלים זמינים...")
-        models_info = []
-        for m in genai.list_models():
-            if 'generateContent' in m.supported_generation_methods:
-                models_info.append({
-                    'שם': m.name.replace('models/', ''),
-                    'תיאור': m.display_name if hasattr(m, 'display_name') else '-',
-                })
-        if models_info:
-            st.table(models_info)
-        else:
-            st.warning("לא נמצאו מודלים זמינים")
-    except Exception as e:
-        st.error(f"שגיאה בבדיקת מודלים: {e}")
-
 # --- 1. Load API Keys from Secrets ---
 try:
     GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
@@ -231,7 +215,7 @@ def search_google_for_url(brand, model, sites, debug_mode=False):
                     if debug_mode:
                         st.success(f"✅ מצאתי התאמה: {item['title']}")
                     return item['link'], item['snippet'], query1
-            
+                
             # Return first result if no perfect match
             if debug_mode:
                 st.warning("⚠️ לא נמצאה התאמה מושלמת, מחזיר תוצאה ראשונה")
@@ -256,7 +240,7 @@ def search_google_for_url(brand, model, sites, debug_mode=False):
         for site in sites[:3]:  # Try first 3 sites only
             query3 = f'{brand} {model} site:{site}'
             if debug_mode:
-                st.info(f"   - מחפש ב: {site}")
+                st.info(f"    - מחפש ב: {site}")
             
             res3 = service.cse().list(q=query3, cx=SEARCH_ENGINE_ID, num=3).execute()
             
@@ -686,14 +670,8 @@ RAW TEXT:
                     if content:
                         st.subheader("העתק-הדבק (טקסט נקי) 📋")
                         st.text_area("תיאור סופי להעתקה", content, height=300)
-                    
-            # Download button
-            st.download_button(
-                label="הורד כקובץ טקסט 💾",
-                data=final_output,
-                file_name=f"{brand_input}_{model_input}_description.txt",
-                mime="text/plain"
-            )
+            
+            # *** הסרתי את כפתור ההורדה מכאן ***
 
 # Footer
 st.markdown("---")
