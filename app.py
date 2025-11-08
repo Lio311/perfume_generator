@@ -5,12 +5,7 @@ import google.generativeai as genai
 from googleapiclient.discovery import build
 import json
 import os
-import importlib.util
-if importlib.util.find_spec("streamlit_clipboard") is None:
-    st.error("❌ streamlit_clipboard package not installed properly.")
-else:
-    st.success("✅ streamlit_clipboard detected.")
-
+import streamlit_clipboard as stc  # <-- 1. התיקון ל-NameError
 
 # --- 0. Page Configuration ---
 st.set_page_config(layout="wide", page_title="AI Perfume Description Generator")
@@ -65,8 +60,11 @@ st.markdown(
         text-align: right !important;
         font-family: 'Open Sans Hebrew', sans-serif !important;
     }
+
     
-    /* Fix expander header alignment */
+    /* --- 2. התיקון היסודי לבעיית ה-"keyl" --- */
+    
+    /* ודא שהכותרת (summary) היא ב-RTL */
     div[data-testid="stExpander"] summary {
         direction: rtl !important;
         display: flex !important;
@@ -75,35 +73,39 @@ st.markdown(
         align-items: center !important;
     }
     
-    div[data-testid="stExpander"] summary svg {
-        margin-left: 0.5rem !important;
-        margin-right: 0 !important;
-        order: -1 !important;
-    }
-    
-    div[data-testid="stExpander"] summary p {
-        flex: 1 !important;
-        text-align: right !important;
-    }
-    
-    /* --- 2. התיקון הסופי לבעיית ה-"keyl" --- */
-    
-    /* Hide "key" text that appears on expanders due to RTL bug */
-    div[data-testid="stExpander"] summary::after {
-        content: none !important;
-    }
-    
-    /* Hide any stray "key" text */
-    div[data-testid="stExpander"] [data-testid="StyledLinkIconContainer"] {
+    /* 1. החבא את *כל* ה-div-ים בתוך ה-summary כברירת מחדל */
+    div[data-testid="stExpander"] summary > div {
         display: none !important;
     }
     
-    /* More aggressive fix for "key" text (hides the 3rd div) */
-    div[data-testid="stExpander"] summary > div:nth-of-type(3) {
+    /* 2. הצג מחדש *רק* את ה-div שמכיל את הטקסט (p) */
+    div[data-testid="stExpander"] summary > div:has(p) {
+        display: flex !important;
+        flex: 1 !important;
+        /* ודא שה-p עצמו תופס מקום */
+        p {
+            flex: 1 !important;
+            text-align: right !important;
+        }
+    }
+    
+    /* 3. הצג מחדש *רק* את ה-div שמכיל את החץ (svg) */
+    div[data-testid="stExpander"] summary > div:has(svg) {
+        display: flex !important;
+        order: -1 !important; /* הזז אותו שמאלה (כי אנחנו ב-RTL) */
+        margin-left: 0.5rem !important;
+        margin-right: 0 !important;
+    }
+
+    /* 4. נקה שאריות ישנות */
+    div[data-testid="stExpander"] summary::after,
+    div[data-testid="stExpander"] [data-testid="StyledLinkIconContainer"] {
+        content: none !important;
         display: none !important;
     }
     
     /* --- סוף התיקון --- */
+    
     
     /* Debug info styling */
     .debug-box {
