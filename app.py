@@ -5,7 +5,12 @@ import google.generativeai as genai
 from googleapiclient.discovery import build
 import json
 import os
-import streamlit_clipboard as stc  # <-- 1. הוספנו את הייבוא הזה
+import importlib.util
+if importlib.util.find_spec("streamlit_clipboard") is None:
+    st.error("❌ streamlit_clipboard package not installed properly.")
+else:
+    st.success("✅ streamlit_clipboard detected.")
+
 
 # --- 0. Page Configuration ---
 st.set_page_config(layout="wide", page_title="AI Perfume Description Generator")
