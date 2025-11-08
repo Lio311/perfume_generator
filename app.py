@@ -168,22 +168,69 @@ def scrape_page_text(url):
         st.error(f"Error scraping URL {url}: {e}")
         return None
 
-def call_gemini(prompt_text, use_json_mode=False, model_name='gemini-1.5-flash-latest'):
+def call_gemini(prompt_text, use_json_mode=False, model_name='models/gemini-2.5-flash', retry_count=3):
     """
-    Generic function to call the Gemini API.
+    Generic function to call the Gemini API with retry logic.
     """
-    try:
-        model = genai.GenerativeModel(model_name)
-        generation_config = {}
-        if use_json_mode:
-            generation_config = {"response_mime_type": "application/json"}
+    import time
+    
+    for attempt in range(retry_count):
+        try:
+            model = genai.GenerativeModel(model_name)
+            generation_config = {}
+            if use_json_mode:
+                generation_config = {"response_mime_type": "application/json"}
+                
+            response = model.generate_content(prompt_text, generation_config=generation_config)
+            return response.text
             
-        response = model.generate_content(prompt_text, generation_config=generation_config)
-        return response.text
-    except Exception as e:
-        st.error(f"Gemini API Error: {e}")
-        st.info(f"💡 המודל '{model_name}' לא זמין. נסה לבחור מודל אחר מהרשימה למטה")
-        return None
+        except Exception as e:
+            error_msg = str(e)
+            
+            # Check if it's a quota error
+            if "429" in error_msg or "quota" in error_msg.lower():
+                st.warning(f"⚠️ חריגה ממכסת המודל '{model_name}'")
+                
+                # Try to extract retry delay
+                if "retry in" in error_msg.lower():
+                    import re
+                    match = re.search(r'retry in ([\d.]+)s', error_msg)
+                    if match:
+                        wait_time = float(match.group(1))
+                        st.info(f"⏳ ממתין {int(wait_time)} שניות לפני ניסיון חוזר...")
+                        time.sleep(wait_time)
+                        continue
+                
+                # If this is not the last attempt, try with flash model
+                if attempt < retry_count - 1 and 'pro' in model_name:
+                    st.info("🔄 מנסה עם מודל Flash (זול יותר)...")
+                    model_name = 'models/gemini-2.5-flash'
+                    time.sleep(2)
+                    continue
+                else:
+                    st.error(f"""
+                    ❌ **מכסת ה-API מלאה!**
+                    
+                    פתרונות אפשריים:
+                    1. המתן כ-60 שניות ונסה שוב (המכסה מתאפסת כל דקה)
+                    2. השתמש במודל `gemini-2.5-flash` במקום `pro` (יש לו מכסה גבוהה יותר)
+                    3. שדרג לתוכנית בתשלום: [Google AI Studio](https://ai.google.dev/pricing)
+                    4. בדוק את השימוש שלך: [Usage Dashboard](https://ai.dev/usage?tab=rate-limit)
+                    
+                    **הסבר:** אתה ב-2/2 RPM על gemini-2.5-pro - המכסה מלאה! 
+                    """)
+                    return None
+            
+            # Other errors
+            elif attempt < retry_count - 1:
+                st.warning(f"⚠️ ניסיון {attempt + 1} נכשל, מנסה שוב...")
+                time.sleep(2)
+            else:
+                st.error(f"❌ Gemini API Error: {error_msg}")
+                st.info(f"💡 המודל '{model_name}' לא זמין. נסה לבחור מודל אחר")
+                return None
+    
+    return None
 
 # --- 3. Streamlit UI Layout ---
 
@@ -262,18 +309,26 @@ try:
 except:
     # Fallback to common model names
     available_models = [
+        'models/gemini-2.5-flash',
         'models/gemini-1.5-flash',
         'models/gemini-1.5-pro', 
-        'models/gemini-pro',
-        'models/gemini-1.0-pro'
+        'models/gemini-pro'
     ]
 
 # Clean model names for display
 display_models = [m.replace('models/', '') for m in available_models]
 
+# Default to flash model (cheaper and faster)
+default_index = 0
+if 'gemini-2.5-flash' in display_models:
+    default_index = display_models.index('gemini-2.5-flash')
+elif 'gemini-1.5-flash' in display_models:
+    default_index = display_models.index('gemini-1.5-flash')
+
 gemini_model = col4.selectbox("מודל Gemini", 
     display_models,
-    help="בחר מודל Gemini זמין"
+    index=default_index,
+    help="⚡ Flash = מהיר וזול | 🧠 Pro = חכם יותר, יקר יותר"
 )
 
 # Add back 'models/' prefix if needed
@@ -332,6 +387,9 @@ if st.session_state.found_url and st.session_state.scraped_text:
     st.header("שלב 2: הפק תיאורים")
     
     if st.button("✨ 2. צור תיאור! (מפעיל 3 קריאות AI)", type="primary"):
+        
+        # Show current model being used
+        st.info(f"🤖 משתמש במודל: **{gemini_model_full}**")
         
         # Step 1: Extract Data
         with st.spinner("⏳ שלב א': מחלץ תווים מהעמוד..."):
