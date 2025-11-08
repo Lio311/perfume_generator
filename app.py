@@ -5,7 +5,6 @@ import google.generativeai as genai
 from googleapiclient.discovery import build
 import json
 import os
-# import streamlit_clipboard as stc  <-- הסרנו את החבילה הבעייתית
 
 # --- 0. Page Configuration ---
 st.set_page_config(layout="wide", page_title="AI Perfume Description Generator")
@@ -418,6 +417,16 @@ vibe_input = col1.selectbox("בחר 'אווירה'", ["ערב ומסתורי", "
 audience_input = col2.selectbox("בחר קהל יעד", ["יוניסקס", "גבר", "אישה"])
 seo_keywords_input = col3.text_input("מילות מפתח נוספות ל-SEO", placeholder="בושם נישה, בושם וניל")
 
+# --- הוספת הסליידר ---
+length_slider = col4.slider(
+    "אורך תיאור רצוי (במילים)",
+    min_value=50,
+    max_value=300,
+    value=150,  # ברירת המחדל המומלצת
+    step=25
+)
+# --- סוף הוספת הסליידר ---
+
 # Get available models dynamically
 available_models = []
 try:
@@ -443,7 +452,8 @@ if 'gemini-2.5-flash' in display_models:
 elif 'gemini-1.5-flash' in display_models:
     default_index = display_models.index('gemini-1.5-flash')
 
-gemini_model = col4.selectbox("מודל Gemini", 
+# הזזנו את בחירת המודל מחוץ לעמודות
+gemini_model = st.selectbox("מודל Gemini", 
     display_models,
     index=default_index,
     help="⚡ Flash = מהיר וזול | 🧠 Pro = חכם יותר, יקר יותר"
@@ -565,11 +575,12 @@ RAW TEXT:
             if extracted_data.get('base_notes'):
                 notes_desc += f"תווים בסיסיים: {', '.join(extracted_data['base_notes'])}"
             
+            # --- עדכון הפרומפט עם הסליידר ---
             prompt_write = f"""
 אתה קופירייטר מומחה לבשמי נישה עבור בוטיק יוקרתי.
 הטון שלך מתוחכם, מעורר חושים ומסתורי.
 
-משימה: כתוב תיאור מוצר שיווקי ומרגש באורך 150-200 מילה.
+משימה: כתוב תיאור מוצר שיווקי ומרגש באורך של כ-{length_slider} מילים.
 אל תציין רק את התווים, אלא תשזור אותם בתוך סיפור או חוויה חושית.
 חשוב: אל תשתמש בכוכביות (**) או הדגשות אחרות במקטע. כתוב טקסט רגיל בלבד.
 
@@ -583,6 +594,7 @@ RAW TEXT:
 כתוב בעברית. התחל עם כותרת מרתקת (לא כותרת H1, רק משפט פותח).
 התמקד בחוויה ובתחושות, לא בפירוט טכני יבש.
 """
+            # --- סוף עדכון הפרומפט ---
             
             creative_draft = call_gemini(prompt_write, model_name=gemini_model_full)
             if not creative_draft:
@@ -675,8 +687,6 @@ RAW TEXT:
                     # Clean text area for copying
                     if content:
                         st.subheader("העתק-הדבק (טקסט נקי) 📋")
-                        
-                        # --- הסרנו את כפתור ההעתקה הבעייתי ---
                         
                         st.text_area("תיאור סופי (להעתקה):", content, height=300)
 
