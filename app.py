@@ -5,6 +5,7 @@ import google.generativeai as genai
 from googleapiclient.discovery import build
 import json
 import os
+import streamlit_clipboard as stc  # <-- 1. הוספנו את הייבוא הזה
 
 # --- 0. Page Configuration ---
 st.set_page_config(layout="wide", page_title="AI Perfume Description Generator")
@@ -80,6 +81,8 @@ st.markdown(
         text-align: right !important;
     }
     
+    /* --- 2. התיקון הסופי לבעיית ה-"keyl" --- */
+    
     /* Hide "key" text that appears on expanders due to RTL bug */
     div[data-testid="stExpander"] summary::after {
         content: none !important;
@@ -90,16 +93,12 @@ st.markdown(
         display: none !important;
     }
     
-    /* Additional fix for key text */
-    div[data-testid="stExpander"] summary > div:last-child:not(:first-child) {
+    /* More aggressive fix for "key" text (hides the 3rd div) */
+    div[data-testid="stExpander"] summary > div:nth-of-type(3) {
         display: none !important;
     }
     
-    /* *** התיקון שהוספתי *** */
-    /* More aggressive fix for "key" text */
-    div[data-testid="stExpander"] summary > div:nth-of-type(2) {
-        display: none !important;
-    }
+    /* --- סוף התיקון --- */
     
     /* Debug info styling */
     .debug-box {
@@ -655,7 +654,7 @@ RAW TEXT:
                     # Final version section
                     lines = section.split('\n')
                     title = lines[0].strip()
-                    content = '\n'.join(lines[1:]).strip()
+                    content = '\n'.join(lines[1:]).strip().replace("[הטקסט המוכן ללא כוכביות או הדגשות]", "")
                     
                     st.markdown(f"""
                     <div class="final-version-box">
@@ -669,9 +668,18 @@ RAW TEXT:
                     # Clean text area for copying
                     if content:
                         st.subheader("העתק-הדבק (טקסט נקי) 📋")
-                        st.text_area("תיאור סופי להעתקה", content, height=300)
-            
-            # *** הסרתי את כפתור ההורדה מכאן ***
+                        
+                        # --- 3. הוספת כפתור ההעתקה ---
+                        copied = stc.clipboard_button(
+                            label="העתק תיאור סופי 📋",
+                            text=content
+                        )
+                        
+                        if copied:
+                            st.toast("הטקסט הועתק!", icon="✅")
+                        # --- סוף כפתור ההעתקה ---
+                        
+                        st.text_area("תיאור סופי (להצגה או עריכה):", content, height=300)
 
 # Footer
 st.markdown("---")
