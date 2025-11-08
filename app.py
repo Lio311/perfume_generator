@@ -61,7 +61,7 @@ st.markdown(
     }
 
     
-    /* --- התיקון היסודי והסופי לבעיית ה-"keyl" --- */
+    /* --- התיקון היסודי והסופי לבעיית ה-"keyboard_arrow_down" --- */
     
     /* ודא שהכותרת (summary) היא ב-RTL */
     div[data-testid="stExpander"] summary {
@@ -70,6 +70,23 @@ st.markdown(
         flex-direction: row-reverse !important;
         justify-content: flex-start !important;
         align-items: center !important;
+    }
+    
+    /* החבא את הטקסט "keyboard_arrow_down" בכל מקום שהוא מופיע */
+    div[data-testid="stExpander"] summary span[color="inherit"] {
+        font-size: 0 !important;
+        color: transparent !important;
+    }
+    
+    /* החבא span-ים עם טקסט של keyboard */
+    div[data-testid="stExpander"] summary span:not([data-testid]) {
+        font-size: 0 !important;
+    }
+    
+    /* וודא שרק האייקון SVG יוצג */
+    div[data-testid="stExpander"] summary span[data-testid="stIconMaterial"] {
+        font-size: 1rem !important;
+        display: inline-flex !important;
     }
     
     /* 1. החבא את *כל* ה-div-ים בתוך ה-summary כברירת מחדל */
@@ -87,7 +104,7 @@ st.markdown(
         flex: 1 !important;
         text-align: right !important;
     }
-    /* החבא כל דבר אחר באותו div (כמו ה-keyl) */
+    /* החבא כל דבר אחר באותו div (כמו טקסט keyboard) */
     div[data-testid="stExpander"] summary > div:has(p) > *:not(p) {
         display: none !important;
     }
