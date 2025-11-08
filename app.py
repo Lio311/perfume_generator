@@ -416,7 +416,7 @@ for site in sites_to_search:
 
 # --- תיקון פריסה: סליידר ומודל ---
 st.subheader("הגדרות לכתיבה (אופציונלי)")
-col1, col2, col3 = st.columns(3) # <-- שונה ל-3 עמודות
+col1, col2, col3 = st.columns(3)
 with col1:
     vibe_input = st.selectbox("בחר 'אווירה'", ["ערב ומסתורי", "רענן ויומיומי", "חושני וסקסי", "יוקרתי ורשמי"])
 with col2:
@@ -424,15 +424,23 @@ with col2:
 with col3:
     seo_keywords_input = st.text_input("מילות מפתח נוספות ל-SEO", placeholder="בושם נישה, בושם וניל")
 
-# הסליידר עכשיו בשורה משלו (רוחב מלא)
-length_slider = st.slider(
-    "אורך תיאור רצוי (במילים)",
-    min_value=50,
-    max_value=300,
-    value=150,  # ברירת המחדל המומלצת
-    step=25
+
+# --- *** החלפת הסליידר בתיבת בחירה *** ---
+length_options = list(range(50, 301, 25))
+try:
+    # מצא את האינדקס של 150 (ברירת המחדל)
+    default_index = length_options.index(150)
+except ValueError:
+    default_index = 0 # אם משהו משתבש, פשוט בחר את הראשון
+
+length_slider = st.selectbox(
+    "בחר אורך תיאור רצוי (במילים):",
+    options=length_options,
+    index=default_index,
+    help="ברירת המחדל המומלצת היא 150 מילים"
 )
-# --- סוף תיקון הפריסה ---
+# --- *** סוף החלפת הסליידר *** ---
+
 
 # Get available models dynamically
 available_models = []
@@ -582,7 +590,7 @@ RAW TEXT:
             if extracted_data.get('base_notes'):
                 notes_desc += f"תווים בסיסיים: {', '.join(extracted_data['base_notes'])}"
             
-            # --- עדכון הפרומפט עם הסליידר ---
+            # --- עדכון הפרומפט עם הבחירה החדשה ---
             prompt_write = f"""
 אתה קופירייטר מומחה לבשמי נישה עבור בוטיק יוקרתי.
 הטון שלך מתוחכם, מעורר חושים ומסתורי.
