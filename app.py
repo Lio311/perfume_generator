@@ -80,6 +80,21 @@ st.markdown(
         text-align: right !important;
     }
     
+    /* Hide "key" text that appears on expanders due to RTL bug */
+    div[data-testid="stExpander"] summary::after {
+        content: none !important;
+    }
+    
+    /* Hide any stray "key" text */
+    div[data-testid="stExpander"] [data-testid="StyledLinkIconContainer"] {
+        display: none !important;
+    }
+    
+    /* Additional fix for key text */
+    div[data-testid="stExpander"] summary > div:last-child:not(:first-child) {
+        display: none !important;
+    }
+    
     /* Debug info styling */
     .debug-box {
         background-color: #f0f2f6;
@@ -534,12 +549,12 @@ RAW TEXT:
                 extracted_json_str = extracted_json_str.replace("```json", "").replace("```", "").strip()
                 st.session_state.extracted_data = json.loads(extracted_json_str)
                 
-                with st.expander("תווים שחולצו (לחץ להצגה) 📋", expanded=False):
+                with st.expander("תווים שחולצו (לחץ להצגה) 📋", expanded=False, key="extracted_notes_expander"):
                     st.json(st.session_state.extracted_data)
                     
             except Exception as e:
                 st.error(f"שלב א' נכשל: לא הצלחתי לפענח את ה-JSON. {e} ❌")
-                with st.expander("תשובה גולמית מ-Gemini 🐛"):
+                with st.expander("תשובה גולמית מ-Gemini 🐛", key="gemini_raw_response_expander"):
                     st.text(extracted_json_str)
                 st.stop()
 
@@ -583,7 +598,7 @@ RAW TEXT:
             # Remove any bold/emphasis markers from the response
             creative_draft = creative_draft.replace("**", "").replace("__", "")
             
-            with st.expander("טיוטה יצירתית (לחץ להצגה) 📝", expanded=True):
+            with st.expander("טיוטה יצירתית (לחץ להצגה) 📝", expanded=True, key="creative_draft_expander"):
                 st.markdown(creative_draft)
 
         # Step 3: SEO Optimization
@@ -666,7 +681,7 @@ RAW TEXT:
                     # Clean text area for copying
                     if content:
                         st.subheader("העתק-הדבק (טקסט נקי) 📋")
-                        st.text_area("תיאור סופי להעתקה", content, height=300, key="final_copy")
+                        st.text_area("תיאור סופי להעתקה", content, height=300, key="final_copy_textarea")
                     
             # Download button
             st.download_button(
