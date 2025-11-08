@@ -7,7 +7,6 @@ import json
 import os
 
 # --- 0. Page Configuration ---
-# Set page config as the first command
 st.set_page_config(layout="wide", page_title="AI Perfume Description Generator")
 
 # --- RTL CSS Injection ---
@@ -47,7 +46,9 @@ st.markdown(
 )
 # --- End of CSS ---
 
-st.title("🖋️ מחולל תיאורי מוצר (גרסה 4000)")
+st.title("🖋️ מחולל תיאורי מוצר (גרסה 5.0)")
+st.info("מנוע החיפוש מחפש אוטומטית בכל האתרים שהוגדרו בלוח הבקרה של Google (Jovoy, Essenza וכו')")
+
 
 # --- 1. Load API Keys from Secrets ---
 try:
@@ -70,17 +71,18 @@ except Exception as e:
 # --- 2. Helper Functions (The "Engine") ---
 
 @st.cache_data(ttl=3600) # Cache search results for 1 hour
-def search_google_for_url(brand, model, sites):
+def search_google_for_url(brand, model):
     """
-    Searches Google Custom Search for the product URL on trusted sites.
+    Searches Google Custom Search for the product URL.
+    The CX ID automatically restricts the search to the trusted sites.
     """
-    st.write(f"Searching for '{brand} {model}' on specified sites...")
+    st.write(f"Searching for '{brand} \"{model}\"' on all configured sites...")
     try:
-        # Build the search query
-        # Example: BDK PARFUMS "VANILLE CAVIAR" site:jovoyparis.com OR ...
-        site_query = " OR ".join([f"site:{site}" for site in sites])
-        # --- SEARCH LOGIC FIX v3: Brand as words, Model as EXACT PHRASE ---
-        query = f'{brand} "{model}" {site_query}' 
+        # --- [!!!] MAJOR FIX ---
+        # The query no longer needs 'site:' operators.
+        # The SEARCH_ENGINE_ID (cx) automatically handles filtering.
+        # We just send the search term.
+        query = f'{brand} "{model}"' 
         
         service = build("customsearch", "v1", developerKey=GOOGLE_API_KEY)
         res = service.cse().list(
@@ -162,42 +164,7 @@ with col1:
 with col2:
     model_input = st.text_input("שם הדגם", placeholder="לדוגמה: Naxos")
 
-# --- UPDATED SITE LIST ---
-# This list now contains all the sites from your image
-site_options = [
-    "nicheperfumes.net",
-    "jovoyparis.com",
-    "nadiaperfumeria.com",
-    "selfridges.com",
-    "luckyscent.com",
-    "lamaisonduparfum.com",
-    "fragrancesandart.com",
-    "neroli.hu",
-    "ecuacionnatural.com",
-    "profumiluxurybrands.it",
-    "maxaroma.com",
-    "essenza-nobile.de",
-    "ausliebezumduft.de"
-]
-sites_to_search = st.multiselect(
-    "אתרים אמינים לחיפוש",
-    options=site_options,
-    default=["jovoyparis.com", "essenza-nobile.de", "nicheperfumes.net", "luckyscent.com"]
-)
-
-# --- [!!!] NEW BUG FIX ---
-# A visual bug in Streamlit RTL sometimes adds an 'x' to the start of the string
-# We manually remove it here before passing it to the search function.
-cleaned_sites = []
-for site in sites_to_search:
-    if site.startswith('x') and site[1:] in site_options:
-        cleaned_sites.append(site[1:]) # Add the cleaned site name
-    else:
-        cleaned_sites.append(site) # Add the site name as-is
-# Use the cleaned list for the search
-sites_to_search_cleaned = cleaned_sites 
-# --- [!!!] END OF FIX ---
-
+# --- [!!!] REMOVED the st.multiselect for sites. It's no longer needed.
 
 # Optional inputs for the AI writer
 st.subheader("הגדרות לכתיבה (אופציונלי)")
@@ -212,8 +179,9 @@ if st.button("1. מצא URL ונתונים", type="primary"):
         st.warning("אנא מלא שם מותג ושם דגם.")
     else:
         with st.spinner("מחפש בגוגל את ה-URL המתאים..."):
-            # Pass the CLEANED list to the search function
-            url, snippet = search_google_for_url(brand_input, model_input, sites_to_search_cleaned)
+            # --- [!!!] SIMPLIFIED FUNCTION CALL ---
+            # Pass only brand and model. The CX ID handles the site list.
+            url, snippet = search_google_for_url(brand_input, model_input)
             
             if url:
                 st.session_state.found_url = url
@@ -228,7 +196,7 @@ if st.button("1. מצא URL ונתונים", type="primary"):
                     else:
                         st.error("לא הצלחתי לגרד נתונים מהעמוד.")
             else:
-                st.error(f"לא מצאתי תוצאות עבור '{brand_input} \"{model_input}\"' באתרים שצוינו.")
+                st.error(f"לא מצאתי תוצאות עבור '{brand_input} \"{model_input}\"' באתרים שהגדרת ב-Google.")
 
 # --- PHASE 2: GENERATION (if URL was found) ---
 if st.session_state.found_url and st.session_state.scraped_text:
