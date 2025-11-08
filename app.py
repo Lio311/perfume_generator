@@ -9,6 +9,43 @@ import os
 # --- 0. Page Configuration ---
 # Set page config as the first command
 st.set_page_config(layout="wide", page_title="AI Perfume Description Generator")
+
+# --- RTL CSS Injection ---
+st.markdown(
+    """
+    <style>
+    /* Force RTL layout for the entire app */
+    div[data-testid="stApp"] {
+        direction: rtl;
+    }
+    /* Align all text to the right */
+    div[data-testid="stApp"] * {
+        text-align: right;
+    }
+    /* Fix for multiselect chips (X button) */
+    div[data-testid="stMultiSelect"] div[data-testid="stFileUploaderClearAll"] {
+        margin-left: 0.5rem;
+        margin-right: 0;
+    }
+    /* Fix alignment of text inputs */
+    div[data-testid="stTextInput"] input {
+        direction: rtl !important;
+    }
+    /* Fix alignment of text area */
+    div[data-testid="stTextArea"] textarea {
+        text-align: right !important;
+        direction: rtl !important;
+    }
+    /* Fix sidebar content alignment */
+    div[data-testid="stSidebarUserContent"] * {
+        text-align: right !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+# --- End of CSS ---
+
 st.title("🖋️ מחולל תיאורי מוצר (גרסה 4000)")
 
 # --- 1. Load API Keys from Secrets ---
@@ -39,9 +76,10 @@ def search_google_for_url(brand, model, sites):
     st.write(f"Searching for '{brand} {model}' on specified sites...")
     try:
         # Build the search query
-        # Example: "Xerjoff Naxos site:jovoyparis.com OR site:essenza-nobile.de"
+        # Example: Xerjoff Naxos site:jovoyparis.com OR site:essenza-nobile.de
         site_query = " OR ".join([f"site:{site}" for site in sites])
-        query = f'"{brand}" "{model}" {site_query}'
+        # --- SEARCH LOGIC FIX: Removed quotes from brand and model for a broader search ---
+        query = f'{brand} {model} {site_query}' 
         
         service = build("customsearch", "v1", developerKey=GOOGLE_API_KEY)
         res = service.cse().list(
@@ -123,11 +161,26 @@ with col1:
 with col2:
     model_input = st.text_input("שם הדגם", placeholder="לדוגמה: Naxos")
 
-# List of trusted sites to search
+# --- UPDATED SITE LIST ---
+# This list now contains all the sites from your image
 sites_to_search = st.multiselect(
     "אתרים אמינים לחיפוש",
-    options=["jovoyparis.com", "essenza-nobile.de", "ausliebezumduft.de", "luckyscent.com"],
-    default=["jovoyparis.com", "essenza-nobile.de"]
+    options=[
+        "nicheperfumes.net",
+        "jovoyparis.com",
+        "nadiaperfumeria.com",
+        "selfridges.com",
+        "luckyscent.com",
+        "lamaisonduparfum.com",
+        "fragrancesandart.com",
+        "neroli.hu",
+        "ecuacionnatural.com",
+        "profumiluxurybrands.it",
+        "maxaroma.com",
+        "essenza-nobile.de",
+        "ausliebezumduft.de" # Added this one from our previous example
+    ],
+    default=["jovoyparis.com", "essenza-nobile.de", "nicheperfumes.net", "luckyscent.com"]
 )
 
 # Optional inputs for the AI writer
@@ -265,6 +318,7 @@ if st.session_state.found_url and st.session_state.scraped_text:
             # Try to extract just the final version for easy copy-paste
             if "גרסה סופית" in final_output.lower():
                 try:
+                    # Find the final version text
                     final_text = final_output.split("רסה הסופית")[1].split(":", 1)[1].strip()
                     st.subheader("העתק-הדבק (טקסט נקי)")
                     st.text_area("תיאור סופי נקי", final_text, height=300)
