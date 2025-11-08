@@ -26,6 +26,7 @@ st.markdown(
     div[data-testid="stMultiSelect"] div[data-testid="stFileUploaderClearAll"] {
         margin-left: 0.5rem;
         margin-right: 0;
+        user-select: none; /* Prevent 'x' from being selected */
     }
     /* Fix alignment of text inputs */
     div[data-testid="stTextInput"] input {
@@ -76,9 +77,9 @@ def search_google_for_url(brand, model, sites):
     st.write(f"Searching for '{brand} {model}' on specified sites...")
     try:
         # Build the search query
-        # Example: Xerjoff Naxos site:jovoyparis.com OR site:essenza-nobile.de
+        # Example: BDK PARFUMS "VANILLE CAVIAR" site:jovoyparis.com OR ...
         site_query = " OR ".join([f"site:{site}" for site in sites])
-        # --- SEARCH LOGIC FIX v2: Search for brand as words, but model as an EXACT PHRASE ---
+        # --- SEARCH LOGIC FIX v3: Brand as words, Model as EXACT PHRASE ---
         query = f'{brand} "{model}" {site_query}' 
         
         service = build("customsearch", "v1", developerKey=GOOGLE_API_KEY)
@@ -163,25 +164,40 @@ with col2:
 
 # --- UPDATED SITE LIST ---
 # This list now contains all the sites from your image
+site_options = [
+    "nicheperfumes.net",
+    "jovoyparis.com",
+    "nadiaperfumeria.com",
+    "selfridges.com",
+    "luckyscent.com",
+    "lamaisonduparfum.com",
+    "fragrancesandart.com",
+    "neroli.hu",
+    "ecuacionnatural.com",
+    "profumiluxurybrands.it",
+    "maxaroma.com",
+    "essenza-nobile.de",
+    "ausliebezumduft.de"
+]
 sites_to_search = st.multiselect(
     "אתרים אמינים לחיפוש",
-    options=[
-        "nicheperfumes.net",
-        "jovoyparis.com",
-        "nadiaperfumeria.com",
-        "selfridges.com",
-        "luckyscent.com",
-        "lamaisonduparfum.com",
-        "fragrancesandart.com",
-        "neroli.hu",
-        "ecuacionnatural.com",
-        "profumiluxurybrands.it",
-        "maxaroma.com",
-        "essenza-nobile.de",
-        "ausliebezumduft.de" # Added this one from our previous example
-    ],
+    options=site_options,
     default=["jovoyparis.com", "essenza-nobile.de", "nicheperfumes.net", "luckyscent.com"]
 )
+
+# --- [!!!] NEW BUG FIX ---
+# A visual bug in Streamlit RTL sometimes adds an 'x' to the start of the string
+# We manually remove it here before passing it to the search function.
+cleaned_sites = []
+for site in sites_to_search:
+    if site.startswith('x') and site[1:] in site_options:
+        cleaned_sites.append(site[1:]) # Add the cleaned site name
+    else:
+        cleaned_sites.append(site) # Add the site name as-is
+# Use the cleaned list for the search
+sites_to_search_cleaned = cleaned_sites 
+# --- [!!!] END OF FIX ---
+
 
 # Optional inputs for the AI writer
 st.subheader("הגדרות לכתיבה (אופציונלי)")
@@ -196,7 +212,8 @@ if st.button("1. מצא URL ונתונים", type="primary"):
         st.warning("אנא מלא שם מותג ושם דגם.")
     else:
         with st.spinner("מחפש בגוגל את ה-URL המתאים..."):
-            url, snippet = search_google_for_url(brand_input, model_input, sites_to_search)
+            # Pass the CLEANED list to the search function
+            url, snippet = search_google_for_url(brand_input, model_input, sites_to_search_cleaned)
             
             if url:
                 st.session_state.found_url = url
@@ -211,7 +228,7 @@ if st.button("1. מצא URL ונתונים", type="primary"):
                     else:
                         st.error("לא הצלחתי לגרד נתונים מהעמוד.")
             else:
-                st.error(f"לא מצאתי תוצאות עבור '{brand_input} {model_input}' באתרים שצוינו.")
+                st.error(f"לא מצאתי תוצאות עבור '{brand_input} \"{model_input}\"' באתרים שצוינו.")
 
 # --- PHASE 2: GENERATION (if URL was found) ---
 if st.session_state.found_url and st.session_state.scraped_text:
