@@ -13,48 +13,137 @@ st.set_page_config(layout="wide", page_title="AI Perfume Description Generator")
 st.markdown(
     """
     <style>
+    /* Import Open Sans Hebrew font */
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans+Hebrew:wght@300;400;500;600;700;800&display=swap');
+    
     /* Force RTL layout for the entire app */
     div[data-testid="stApp"] {
         direction: rtl;
+        font-family: 'Open Sans Hebrew', sans-serif !important;
     }
-    /* Align all text to the right */
-    div[data-testid="stApp"] * {
+    
+    /* Apply font to all elements */
+    div[data-testid="stApp"] *, 
+    .stMarkdown, 
+    .stText, 
+    h1, h2, h3, h4, h5, h6, 
+    p, span, div, 
+    input, textarea, select, button,
+    .stTextInput, .stTextArea, .stSelectbox {
+        font-family: 'Open Sans Hebrew', sans-serif !important;
         text-align: right;
     }
+    
     /* Fix for multiselect chips (X button) */
     div[data-testid="stMultiSelect"] div[data-testid="stFileUploaderClearAll"] {
         margin-left: 0.5rem;
         margin-right: 0;
         user-select: none;
     }
+    
     /* Fix alignment of text inputs */
     div[data-testid="stTextInput"] input {
         direction: rtl !important;
+        font-family: 'Open Sans Hebrew', sans-serif !important;
     }
+    
     /* Fix alignment of text area */
     div[data-testid="stTextArea"] textarea {
         text-align: right !important;
         direction: rtl !important;
+        font-family: 'Open Sans Hebrew', sans-serif !important;
     }
+    
     /* Fix sidebar content alignment */
     div[data-testid="stSidebarUserContent"] * {
         text-align: right !important;
+        font-family: 'Open Sans Hebrew', sans-serif !important;
     }
+    
     /* Debug info styling */
     .debug-box {
         background-color: #f0f2f6;
         padding: 10px;
         border-radius: 5px;
         margin: 10px 0;
-        font-family: monospace;
+        font-family: 'Open Sans Hebrew', monospace !important;
         font-size: 12px;
+    }
+    
+    /* SEO Analysis Box Styling */
+    .seo-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+        border-radius: 10px;
+        margin: 15px 0;
+        color: white;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .seo-section h3 {
+        color: white;
+        border-bottom: 2px solid rgba(255,255,255,0.3);
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+        font-family: 'Open Sans Hebrew', sans-serif !important;
+    }
+    
+    .seo-section ul {
+        background: rgba(255,255,255,0.1);
+        padding: 15px 25px;
+        border-radius: 5px;
+        margin: 10px 0;
+    }
+    
+    .seo-section li {
+        margin: 8px 0;
+        line-height: 1.6;
+    }
+    
+    .final-version-box {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        padding: 20px;
+        border-radius: 10px;
+        margin: 15px 0;
+        color: white;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .final-version-box h3 {
+        color: white;
+        border-bottom: 2px solid rgba(255,255,255,0.3);
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+    }
+    
+    /* Remove bold/emphasis from markdown content */
+    .stMarkdown strong, .stMarkdown b {
+        font-weight: normal !important;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-st.title("🖋️ מחולל תיאורי מוצר (גרסה משופרת)")
+st.title("מחולל תיאורי מוצר (גרסה משופרת) 🖋️")
+
+# Show API status
+with st.expander("סטטוס API ומכסות 📊", expanded=False):
+    try:
+        st.caption("בודק מודלים זמינים...")
+        models_info = []
+        for m in genai.list_models():
+            if 'generateContent' in m.supported_generation_methods:
+                models_info.append({
+                    'שם': m.name.replace('models/', ''),
+                    'תיאור': m.display_name if hasattr(m, 'display_name') else '-',
+                })
+        if models_info:
+            st.table(models_info)
+        else:
+            st.warning("לא נמצאו מודלים זמינים")
+    except Exception as e:
+        st.error(f"שגיאה בבדיקת מודלים: {e}")
 
 # --- 1. Load API Keys from Secrets ---
 try:
@@ -337,7 +426,7 @@ if not gemini_model.startswith('models/'):
 else:
     gemini_model_full = gemini_model
 
-if st.button("🔍 1. מצא URL ונתונים", type="primary"):
+if st.button("מצא URL ונתונים 🔍", type="primary"):
     if not brand_input or not model_input:
         st.warning("אנא מלא שם מותג ושם דגם.")
     else:
@@ -386,13 +475,13 @@ if st.session_state.found_url and st.session_state.scraped_text:
     st.markdown("---")
     st.header("שלב 2: הפק תיאורים")
     
-    if st.button("✨ 2. צור תיאור! (מפעיל 3 קריאות AI)", type="primary"):
+    if st.button("צור תיאור! (מפעיל 3 קריאות AI) ✨", type="primary"):
         
         # Show current model being used
-        st.info(f"🤖 משתמש במודל: **{gemini_model_full}**")
+        st.info(f"משתמש במודל: **{gemini_model_full}** 🤖")
         
         # Step 1: Extract Data
-        with st.spinner("⏳ שלב א': מחלץ תווים מהעמוד..."):
+        with st.spinner("שלב א': מחלץ תווים מהעמוד... ⏳"):
             prompt_extract = f"""
 You are a data extraction bot. Your task is to parse the following raw text from a perfume website.
 Extract ONLY the following information in a clean JSON format.
@@ -425,17 +514,17 @@ RAW TEXT:
                 extracted_json_str = extracted_json_str.replace("```json", "").replace("```", "").strip()
                 st.session_state.extracted_data = json.loads(extracted_json_str)
                 
-                with st.expander("📋 תווים שחולצו (לחץ להצגה)", expanded=False):
+                with st.expander("תווים שחולצו (לחץ להצגה) 📋", expanded=False):
                     st.json(st.session_state.extracted_data)
                     
             except Exception as e:
-                st.error(f"❌ שלב א' נכשל: לא הצלחתי לפענח את ה-JSON. {e}")
-                with st.expander("🐛 תשובה גולמית מ-Gemini"):
+                st.error(f"שלב א' נכשל: לא הצלחתי לפענח את ה-JSON. {e} ❌")
+                with st.expander("תשובה גולמית מ-Gemini 🐛"):
                     st.text(extracted_json_str)
                 st.stop()
 
         # Step 2: Creative Writing
-        with st.spinner("⏳ שלב ב': כותב תיאור יצירתי..."):
+        with st.spinner("שלב ב': כותב תיאור יצירתי... ⏳"):
             extracted_data = st.session_state.extracted_data
             
             # Build notes description
@@ -453,6 +542,7 @@ RAW TEXT:
 
 משימה: כתוב תיאור מוצר שיווקי ומרגש באורך 150-200 מילה.
 אל תציין רק את התווים, אלא תשזור אותם בתוך סיפור או חוויה חושית.
+חשוב: אל תשתמש בכוכביות (**) או הדגשות אחרות במקטע. כתוב טקסט רגיל בלבד.
 
 נתונים:
 - שם: {extracted_data.get('perfume_name') or model_input}
@@ -467,14 +557,17 @@ RAW TEXT:
             
             creative_draft = call_gemini(prompt_write, model_name=gemini_model_full)
             if not creative_draft:
-                st.error("❌ שלב ב' נכשל: Gemini לא החזיר טיוטה.")
+                st.error("שלב ב' נכשל: Gemini לא החזיר טיוטה. ❌")
                 st.stop()
             
-            with st.expander("📝 טיוטה יצירתית (לחץ להצגה)", expanded=True):
+            # Remove any bold/emphasis markers from the response
+            creative_draft = creative_draft.replace("**", "").replace("__", "")
+            
+            with st.expander("טיוטה יצירתית (לחץ להצגה) 📝", expanded=True):
                 st.markdown(creative_draft)
 
         # Step 3: SEO Optimization
-        with st.spinner("⏳ שלב ג': מבצע אופטימיזציית SEO..."):
+        with st.spinner("שלב ג': מבצע אופטימיזציית SEO... ⏳"):
             prompt_seo = f"""
 אתה מומחה SEO לאתרי איקומרס בתחום הבישום.
 
@@ -483,48 +576,81 @@ RAW TEXT:
 2. ספק 3-5 נקודות לשיפור (צפיפות מילות מפתח, קריאות, ייחודיות)
 3. כתוב את הגרסה הסופית המשופרת בעברית
 
+חשוב מאוד: אל תשתמש בכוכביות (**) או הדגשות כלשהן בטקסט הסופי!
+
 מילות מפתח חובה לשילוב: '{model_input}', '{brand_input}', 'בושם יוקרה', 'בושם נישה', {seo_keywords_input}.
 
 טיוטה לניתוח:
 {creative_draft}
 
-החזר בפורמט:
+החזר בפורמט הבא (בדיוק כך):
 
 ## ניתוח SEO
-[רשימת נקודות]
+- נקודה 1
+- נקודה 2
+- נקודה 3
 
 ## גרסה סופית משופרת
-[הטקסט המוכן]
+[הטקסט המוכן ללא כוכביות או הדגשות]
 """
             
             final_output = call_gemini(prompt_seo, model_name=gemini_model_full)
             if not final_output:
-                st.error("❌ שלב ג' נכשל: Gemini לא החזיר ניתוח SEO.")
+                st.error("שלב ג' נכשל: Gemini לא החזיר ניתוח SEO. ❌")
                 st.stop()
 
+            # Remove bold markers
+            final_output = final_output.replace("**", "").replace("__", "")
+
             st.markdown("---")
-            st.subheader("✅ תוצר סופי: ניתוח SEO ותיאור מוכן")
-            st.markdown(final_output)
+            st.subheader("תוצר סופי: ניתוח SEO ותיאור מוכן ✅")
             
-            # Try to extract final version
-            if "גרסה סופית" in final_output.lower() or "הטקסט המוכן" in final_output.lower():
-                try:
-                    parts = final_output.split("##")
-                    for part in parts:
-                        if "גרסה סופית" in part.lower() or "הטקסט המוכן" in part.lower():
-                            # Extract text after the header
-                            lines = part.split('\n')
-                            final_text = '\n'.join(lines[1:]).strip()
-                            if final_text:
-                                st.subheader("📋 העתק-הדבק (טקסט נקי)")
-                                st.text_area("תיאור סופי להעתקה", final_text, height=300, key="final_copy")
-                                break
-                except Exception as e:
-                    pass  # Full markdown is still displayed above
+            # Parse and format the output with styled boxes
+            sections = final_output.split("##")
+            
+            for section in sections:
+                section = section.strip()
+                if not section:
+                    continue
+                    
+                if "ניתוח seo" in section.lower():
+                    # SEO Analysis section
+                    lines = section.split('\n')
+                    title = lines[0].strip()
+                    content = '\n'.join(lines[1:]).strip()
+                    
+                    st.markdown(f"""
+                    <div class="seo-section">
+                        <h3>{title}</h3>
+                        <div style="text-align: right;">
+                            {content.replace('- ', '• ').replace('\n', '<br>')}
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                elif "גרסה סופית" in section.lower() or "הטקסט המוכן" in section.lower():
+                    # Final version section
+                    lines = section.split('\n')
+                    title = lines[0].strip()
+                    content = '\n'.join(lines[1:]).strip()
+                    
+                    st.markdown(f"""
+                    <div class="final-version-box">
+                        <h3>{title}</h3>
+                        <div style="text-align: right; line-height: 1.8;">
+                            {content}
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    # Clean text area for copying
+                    if content:
+                        st.subheader("העתק-הדבק (טקסט נקי) 📋")
+                        st.text_area("תיאור סופי להעתקה", content, height=300, key="final_copy")
                     
             # Download button
             st.download_button(
-                label="💾 הורד כקובץ טקסט",
+                label="הורד כקובץ טקסט 💾",
                 data=final_output,
                 file_name=f"{brand_input}_{model_input}_description.txt",
                 mime="text/plain"
@@ -532,4 +658,4 @@ RAW TEXT:
 
 # Footer
 st.markdown("---")
-st.caption("🚀 מופעל על ידי Google Gemini & Google Custom Search API | נוצר עבור בוטיקי בשמים יוקרתיים")
+st.caption("מופעל על ידי Google Gemini & Google Custom Search API | נוצר עבור בוטיקי בשמים יוקרתיים 🚀")
