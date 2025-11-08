@@ -61,7 +61,7 @@ st.markdown(
     }
 
     
-    /* --- התיקון היסודי לבעיית ה-"keyl" --- */
+    /* --- התיקון היסודי והסופי לבעיית ה-"keyl" --- */
     
     /* ודא שהכותרת (summary) היא ב-RTL */
     div[data-testid="stExpander"] summary {
@@ -81,15 +81,19 @@ st.markdown(
     div[data-testid="stExpander"] summary > div:has(p) {
         display: flex !important;
         flex: 1 !important;
-        /* ודא שה-p עצמו תופס מקום */
-        p {
-            flex: 1 !important;
-            text-align: right !important;
-        }
+    }
+    /* ודא שה-p עצמו תופס מקום */
+    div[data-testid="stExpander"] summary > div:has(p) p {
+        flex: 1 !important;
+        text-align: right !important;
+    }
+    /* החבא כל דבר אחר באותו div (כמו ה-keyl) */
+    div[data-testid="stExpander"] summary > div:has(p) > *:not(p) {
+        display: none !important;
     }
     
-    /* 3. הצג מחדש *רק* את ה-div שמכיל את החץ (svg) */
-    div[data-testid="stExpander"] summary > div:has(svg) {
+    /* 3. הצג מחדש *רק* את ה-div שמכיל את החץ (שהוא span) */
+    div[data-testid="stExpander"] summary > div:has(span[data-testid="stIconMaterial"]) {
         display: flex !important;
         order: -1 !important; /* הזז אותו שמאלה (כי אנחנו ב-RTL) */
         margin-left: 0.5rem !important;
