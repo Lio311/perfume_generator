@@ -414,22 +414,25 @@ for site in sites_to_search:
     else:
         cleaned_sites.append(site)
 
-# Optional inputs for AI writer
+# --- תיקון פריסה: סליידר ומודל ---
 st.subheader("הגדרות לכתיבה (אופציונלי)")
-col1, col2, col3, col4 = st.columns(4)
-vibe_input = col1.selectbox("בחר 'אווירה'", ["ערב ומסתורי", "רענן ויומיומי", "חושני וסקסי", "יוקרתי ורשמי"])
-audience_input = col2.selectbox("בחר קהל יעד", ["יוניסקס", "גבר", "אישה"])
-seo_keywords_input = col3.text_input("מילות מפתח נוספות ל-SEO", placeholder="בושם נישה, בושם וניל")
+col1, col2, col3 = st.columns(3) # <-- שונה ל-3 עמודות
+with col1:
+    vibe_input = st.selectbox("בחר 'אווירה'", ["ערב ומסתורי", "רענן ויומיומי", "חושני וסקסי", "יוקרתי ורשמי"])
+with col2:
+    audience_input = st.selectbox("בחר קהל יעד", ["יוניסקס", "גבר", "אישה"])
+with col3:
+    seo_keywords_input = st.text_input("מילות מפתח נוספות ל-SEO", placeholder="בושם נישה, בושם וניל")
 
-# --- הוספת הסליידר ---
-length_slider = col4.slider(
+# הסליידר עכשיו בשורה משלו (רוחב מלא)
+length_slider = st.slider(
     "אורך תיאור רצוי (במילים)",
     min_value=50,
     max_value=300,
     value=150,  # ברירת המחדל המומלצת
     step=25
 )
-# --- סוף הוספת הסליידר ---
+# --- סוף תיקון הפריסה ---
 
 # Get available models dynamically
 available_models = []
@@ -456,7 +459,7 @@ if 'gemini-2.5-flash' in display_models:
 elif 'gemini-1.5-flash' in display_models:
     default_index = display_models.index('gemini-1.5-flash')
 
-# הזזנו את בחירת המודל מחוץ לעמודות
+# בחירת המודל (גם היא בשורה משלה)
 gemini_model = st.selectbox("מודל Gemini", 
     display_models,
     index=default_index,
