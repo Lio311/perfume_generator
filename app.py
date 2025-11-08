@@ -94,6 +94,10 @@ st.markdown(
     div[data-testid="stExpander"] summary > div:last-child:not(:first-child) {
         display: none !important;
     }
+    /* More aggressive fix for "key" text */
+        div[data-testid="stExpander"] summary > div:nth-of-type(2) {
+            display: none !important;
+        }
     
     /* Debug info styling */
     .debug-box {
