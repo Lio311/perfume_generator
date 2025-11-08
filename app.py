@@ -549,12 +549,12 @@ RAW TEXT:
                 extracted_json_str = extracted_json_str.replace("```json", "").replace("```", "").strip()
                 st.session_state.extracted_data = json.loads(extracted_json_str)
                 
-                with st.expander("תווים שחולצו (לחץ להצגה) 📋", expanded=False, key="extracted_notes_expander"):
+                with st.expander("תווים שחולצו (לחץ להצגה) 📋", expanded=False):
                     st.json(st.session_state.extracted_data)
                     
             except Exception as e:
                 st.error(f"שלב א' נכשל: לא הצלחתי לפענח את ה-JSON. {e} ❌")
-                with st.expander("תשובה גולמית מ-Gemini 🐛", key="gemini_raw_response_expander"):
+                with st.expander("תשובה גולמית מ-Gemini 🐛"):
                     st.text(extracted_json_str)
                 st.stop()
 
@@ -598,7 +598,7 @@ RAW TEXT:
             # Remove any bold/emphasis markers from the response
             creative_draft = creative_draft.replace("**", "").replace("__", "")
             
-            with st.expander("טיוטה יצירתית (לחץ להצגה) 📝", expanded=True, key="creative_draft_expander"):
+            with st.expander("טיוטה יצירתית (לחץ להצגה) 📝", expanded=True):
                 st.markdown(creative_draft)
 
         # Step 3: SEO Optimization
@@ -681,7 +681,7 @@ RAW TEXT:
                     # Clean text area for copying
                     if content:
                         st.subheader("העתק-הדבק (טקסט נקי) 📋")
-                        st.text_area("תיאור סופי להעתקה", content, height=300, key="final_copy_textarea")
+                        st.text_area("תיאור סופי להעתקה", content, height=300)
                     
             # Download button
             st.download_button(
