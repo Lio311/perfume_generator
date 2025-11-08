@@ -5,7 +5,7 @@ import google.generativeai as genai
 from googleapiclient.discovery import build
 import json
 import os
-import streamlit_clipboard as stc  # <-- 1. התיקון ל-NameError
+# import streamlit_clipboard as stc  <-- הסרנו את החבילה הבעייתית
 
 # --- 0. Page Configuration ---
 st.set_page_config(layout="wide", page_title="AI Perfume Description Generator")
@@ -62,7 +62,7 @@ st.markdown(
     }
 
     
-    /* --- 2. התיקון היסודי לבעיית ה-"keyl" --- */
+    /* --- התיקון היסודי לבעיית ה-"keyl" --- */
     
     /* ודא שהכותרת (summary) היא ב-RTL */
     div[data-testid="stExpander"] summary {
@@ -676,17 +676,9 @@ RAW TEXT:
                     if content:
                         st.subheader("העתק-הדבק (טקסט נקי) 📋")
                         
-                        # --- 3. הוספת כפתור ההעתקה ---
-                        copied = stc.clipboard_button(
-                            label="העתק תיאור סופי 📋",
-                            text=content
-                        )
+                        # --- הסרנו את כפתור ההעתקה הבעייתי ---
                         
-                        if copied:
-                            st.toast("הטקסט הועתק!", icon="✅")
-                        # --- סוף כפתור ההעתקה ---
-                        
-                        st.text_area("תיאור סופי (להצגה או עריכה):", content, height=300)
+                        st.text_area("תיאור סופי (להעתקה):", content, height=300)
 
 # Footer
 st.markdown("---")
