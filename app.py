@@ -252,10 +252,35 @@ col1, col2, col3, col4 = st.columns(4)
 vibe_input = col1.selectbox("בחר 'אווירה'", ["ערב ומסתורי", "רענן ויומיומי", "חושני וסקסי", "יוקרתי ורשמי"])
 audience_input = col2.selectbox("בחר קהל יעד", ["יוניסקס", "גבר", "אישה"])
 seo_keywords_input = col3.text_input("מילות מפתח נוספות ל-SEO", placeholder="בושם נישה, בושם וניל")
+
+# Get available models dynamically
+available_models = []
+try:
+    for m in genai.list_models():
+        if 'generateContent' in m.supported_generation_methods:
+            available_models.append(m.name)
+except:
+    # Fallback to common model names
+    available_models = [
+        'models/gemini-1.5-flash',
+        'models/gemini-1.5-pro', 
+        'models/gemini-pro',
+        'models/gemini-1.0-pro'
+    ]
+
+# Clean model names for display
+display_models = [m.replace('models/', '') for m in available_models]
+
 gemini_model = col4.selectbox("מודל Gemini", 
-    ["gemini-1.5-flash-latest", "gemini-1.5-pro-latest", "gemini-pro"],
-    help="בחר מודל אם המודל הברירת מחדל לא עובד"
+    display_models,
+    help="בחר מודל Gemini זמין"
 )
+
+# Add back 'models/' prefix if needed
+if not gemini_model.startswith('models/'):
+    gemini_model_full = f'models/{gemini_model}'
+else:
+    gemini_model_full = gemini_model
 
 if st.button("🔍 1. מצא URL ונתונים", type="primary"):
     if not brand_input or not model_input:
@@ -332,7 +357,7 @@ RAW TEXT:
 {st.session_state.scraped_text}
 """
             
-            extracted_json_str = call_gemini(prompt_extract, use_json_mode=True, model_name=gemini_model)
+            extracted_json_str = call_gemini(prompt_extract, use_json_mode=True, model_name=gemini_model_full)
             
             if not extracted_json_str:
                 st.error("❌ שלב א' נכשל: Gemini לא החזיר נתונים.")
@@ -382,7 +407,7 @@ RAW TEXT:
 התמקד בחוויה ובתחושות, לא בפירוט טכני יבש.
 """
             
-            creative_draft = call_gemini(prompt_write, model_name=gemini_model)
+            creative_draft = call_gemini(prompt_write, model_name=gemini_model_full)
             if not creative_draft:
                 st.error("❌ שלב ב' נכשל: Gemini לא החזיר טיוטה.")
                 st.stop()
@@ -414,7 +439,7 @@ RAW TEXT:
 [הטקסט המוכן]
 """
             
-            final_output = call_gemini(prompt_seo, model_name=gemini_model)
+            final_output = call_gemini(prompt_seo, model_name=gemini_model_full)
             if not final_output:
                 st.error("❌ שלב ג' נכשל: Gemini לא החזיר ניתוח SEO.")
                 st.stop()
