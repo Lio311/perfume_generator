@@ -425,21 +425,7 @@ with col3:
     seo_keywords_input = st.text_input("מילות מפתח נוספות ל-SEO", placeholder="בושם נישה, בושם וניל")
 
 
-# --- *** החזרת הסליידר לחצי עמוד *** ---
-col1_slider, col2_slider = st.columns([1, 1]) # [חצי רוחב, חצי רוחב]
-with col1_slider:
-    length_slider = st.slider(
-        "אורך תיאור רצוי (במילים):",
-        min_value=50,
-        max_value=300,
-        value=150,  # ברירת המחדל המומלצת
-        step=25
-    )
-# col2_slider נשאר ריק בכוונה
-# --- *** סוף קטע סליידר *** ---
-
-
-# Get available models dynamically
+# --- *** הכנת נתונים למודל (לפני הפריסה) *** ---
 available_models = []
 try:
     for m in genai.list_models():
@@ -463,13 +449,29 @@ if 'gemini-2.5-flash' in display_models:
     default_index = display_models.index('gemini-2.5-flash')
 elif 'gemini-1.5-flash' in display_models:
     default_index = display_models.index('gemini-1.5-flash')
+# --- *** סוף הכנת נתונים למודל *** ---
 
-# בחירת המודל (בשורה משלה)
-gemini_model = st.selectbox("מודל Gemini", 
-    display_models,
-    index=default_index,
-    help="⚡ Flash = מהיר וזול | 🧠 Pro = חכם יותר, יקר יותר"
-)
+
+# --- *** שורה חדשה לסליידר ומודל *** ---
+col_slider, col_model = st.columns(2)
+
+with col_slider:
+    length_slider = st.slider(
+        "אורך תיאור רצוי (במילים):",
+        min_value=50,
+        max_value=300,
+        value=150,
+        step=25
+    )
+
+with col_model:
+    gemini_model = st.selectbox("מודל Gemini", 
+        display_models,
+        index=default_index,
+        help="⚡ Flash = מהיר וזול | 🧠 Pro = חכם יותר, יקר יותר"
+    )
+# --- *** סוף שורה חדשה *** ---
+
 
 # Add back 'models/' prefix if needed
 if not gemini_model.startswith('models/'):
