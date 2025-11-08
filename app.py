@@ -78,8 +78,8 @@ def search_google_for_url(brand, model, sites):
         # Build the search query
         # Example: Xerjoff Naxos site:jovoyparis.com OR site:essenza-nobile.de
         site_query = " OR ".join([f"site:{site}" for site in sites])
-        # --- SEARCH LOGIC FIX: Removed quotes from brand and model for a broader search ---
-        query = f'{brand} {model} {site_query}' 
+        # --- SEARCH LOGIC FIX v2: Search for brand as words, but model as an EXACT PHRASE ---
+        query = f'{brand} "{model}" {site_query}' 
         
         service = build("customsearch", "v1", developerKey=GOOGLE_API_KEY)
         res = service.cse().list(
