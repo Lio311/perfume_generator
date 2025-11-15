@@ -176,7 +176,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.title("מחולל תיאורי מוצר (גרסה משופרת)")
+st.title("מחולל תיאורי מוצר")
 
 # --- 1. Load API Keys from Secrets ---
 try:
