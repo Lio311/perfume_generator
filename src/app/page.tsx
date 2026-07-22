@@ -143,13 +143,13 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
               מחולל תיאורי בשמים
             </h1>
           </div>
-          <p className="text-lg text-slate-300 font-light">
+          <p className="text-lg text-slate-200 font-light">
             צור תיאורים מקצועיים ויצירתיים לבשמים באמצעות בינה מלאכותית
           </p>
         </header>
 
         {/* Form Card */}
-        <Card className="card-anim glass-card border-white/10 mb-8 bg-black/20">
+        <Card className="card-anim glass-card border-white/20 mb-8 bg-slate-900/60">
           <CardHeader>
             <CardTitle className="text-2xl flex items-center gap-2 text-white">
               <Sparkles className="w-6 h-6 text-purple-400" />
@@ -160,7 +160,7 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
             <form onSubmit={handleGenerate} className="space-y-6">
               
               <div className="space-y-2 text-right">
-                <Label htmlFor="perfumeName" className="flex items-center gap-2 text-slate-300">
+                <Label htmlFor="perfumeName" className="flex items-center gap-2 text-slate-200">
                   <Tag className="w-4 h-4 text-purple-400" /> שם הבושם
                 </Label>
                 <Input 
@@ -169,19 +169,19 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
                   onChange={(e) => handleChange("name", e.target.value)}
                   placeholder="לדוגמה: Midnight Rose" 
                   required 
-                  className="bg-white/5 border-white/10 focus-visible:ring-purple-500 text-white placeholder:text-slate-500 text-right"
+                  className="bg-slate-800/60 border-white/20 focus-visible:ring-purple-500 text-white placeholder:text-slate-400 text-right"
                 />
               </div>
 
               <div className="space-y-2 text-right">
-                <Label className="flex items-center gap-2 text-slate-300">
+                <Label className="flex items-center gap-2 text-slate-200">
                   <VenusAndMars className="w-4 h-4 text-purple-400" /> סוג הבושם
                 </Label>
                 <Select value={formData.type} onValueChange={(val) => handleChange("type", val || "")} required>
-                  <SelectTrigger className="bg-white/5 border-white/10 text-white focus:ring-purple-500 text-right text-base flex-row-reverse justify-between">
+                  <SelectTrigger className="bg-slate-800/60 border-white/20 text-white focus:ring-purple-500 text-right text-base flex-row-reverse justify-between">
                     <SelectValue placeholder="בחר סוג" />
                   </SelectTrigger>
-                  <SelectContent className="bg-slate-800 border-white/10 text-white" dir="rtl">
+                  <SelectContent className="bg-slate-800 border-white/20 text-white" dir="rtl">
                     <SelectItem value="לנשים">לנשים</SelectItem>
                     <SelectItem value="לגברים">לגברים</SelectItem>
                     <SelectItem value="יוניסקס">יוניסקס</SelectItem>
@@ -190,7 +190,7 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
               </div>
 
               <div className="space-y-2 text-right">
-                <Label htmlFor="perfumeNotes" className="flex items-center gap-2 text-slate-300">
+                <Label htmlFor="perfumeNotes" className="flex items-center gap-2 text-slate-200">
                   <Leaf className="w-4 h-4 text-purple-400" /> תווי ריח עיקריים
                 </Label>
                 <Textarea 
@@ -199,12 +199,12 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
                   onChange={(e) => handleChange("notes", e.target.value)}
                   placeholder="לדוגמה: ורד, וניל, עץ סנדל, ברגמוט" 
                   required 
-                  className="bg-white/5 border-white/10 focus-visible:ring-purple-500 text-white min-h-[80px] placeholder:text-slate-500 text-right"
+                  className="bg-slate-800/60 border-white/20 focus-visible:ring-purple-500 text-white min-h-[80px] placeholder:text-slate-400 text-right"
                 />
               </div>
 
               <div className="space-y-2 text-right">
-                <Label htmlFor="perfumeOccasion" className="flex items-center gap-2 text-slate-300">
+                <Label htmlFor="perfumeOccasion" className="flex items-center gap-2 text-slate-200">
                   <CalendarDays className="w-4 h-4 text-purple-400" /> אירוע/עונה
                 </Label>
                 <Input 
@@ -212,12 +212,12 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
                   value={formData.occasion}
                   onChange={(e) => handleChange("occasion", e.target.value)}
                   placeholder="לדוגמה: ערב, קיץ, יום יום" 
-                  className="bg-white/5 border-white/10 focus-visible:ring-purple-500 text-white placeholder:text-slate-500 text-right"
+                  className="bg-slate-800/60 border-white/20 focus-visible:ring-purple-500 text-white placeholder:text-slate-400 text-right"
                 />
               </div>
 
               <div className="space-y-2 text-right">
-                <Label htmlFor="additionalInfo" className="flex items-center gap-2 text-slate-300">
+                <Label htmlFor="additionalInfo" className="flex items-center gap-2 text-slate-200">
                   <Info className="w-4 h-4 text-purple-400" /> מידע נוסף (אופציונלי)
                 </Label>
                 <Textarea 
@@ -225,12 +225,12 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
                   value={formData.additionalInfo}
                   onChange={(e) => handleChange("additionalInfo", e.target.value)}
                   placeholder="כל מידע נוסף שתרצה להוסיף..." 
-                  className="bg-white/5 border-white/10 focus-visible:ring-purple-500 text-white placeholder:text-slate-500 text-right"
+                  className="bg-slate-800/60 border-white/20 focus-visible:ring-purple-500 text-white placeholder:text-slate-400 text-right"
                 />
               </div>
 
-              <div className="space-y-2 pt-4 border-t border-white/10 text-right">
-                <Label htmlFor="apiKey" className="flex items-center gap-2 text-slate-300">
+              <div className="space-y-2 pt-4 border-t border-white/20 text-right">
+                <Label htmlFor="apiKey" className="flex items-center gap-2 text-slate-200">
                   <Key className="w-4 h-4 text-purple-400" /> Google Gemini API Key
                 </Label>
                 <Input 
@@ -240,7 +240,7 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
                   onChange={(e) => handleChange("apiKey", e.target.value)}
                   placeholder="הזן את מפתח ה-API שלך" 
                   required 
-                  className="bg-white/5 border-white/10 focus-visible:ring-purple-500 text-white placeholder:text-slate-500 text-right"
+                  className="bg-slate-800/60 border-white/20 focus-visible:ring-purple-500 text-white placeholder:text-slate-400 text-right"
                   dir="ltr"
                 />
                 <p className="text-xs text-slate-400 mt-1">
@@ -267,7 +267,7 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
 
         {/* Output Section */}
         {generatedText && (
-          <Card id="outputSection" className="output-anim glass-card border-white/10 mb-8 bg-black/20">
+          <Card id="outputSection" className="output-anim glass-card border-white/20 mb-8 bg-slate-900/60">
             <CardHeader className="flex flex-row items-center justify-between border-b border-white/5 pb-4">
               <CardTitle className="text-xl flex items-center gap-2 text-white">
                 <Sparkles className="w-5 h-5 text-purple-400" /> התיאור שנוצר
@@ -276,20 +276,20 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
                 variant="outline" 
                 size="sm" 
                 onClick={handleCopy}
-                className="bg-white/5 border-white/10 hover:bg-white/10 text-white"
+                className="bg-slate-800/60 border-white/20 hover:bg-white/10 text-white"
               >
                 {isCopied ? <span className="text-green-400">הועתק!</span> : <><Copy className="w-4 h-4 ml-2" /> העתק</>}
               </Button>
             </CardHeader>
             <CardContent className="pt-6">
-              <div className="bg-black/20 rounded-xl p-6 mb-6 text-slate-200 whitespace-pre-wrap leading-relaxed border border-white/5 text-right">
+              <div className="bg-slate-900/60 rounded-xl p-6 mb-6 text-slate-200 whitespace-pre-wrap leading-relaxed border border-white/5 text-right">
                 {generatedText}
               </div>
               <div className="flex justify-center">
                 <Button 
                   variant="secondary" 
                   onClick={handleNew}
-                  className="bg-white/10 hover:bg-white/20 text-white border-white/10 border"
+                  className="bg-white/10 hover:bg-white/20 text-white border-white/20 border"
                 >
                   <RefreshCw className="w-4 h-4 ml-2" /> צור תיאור חדש
                 </Button>
@@ -299,7 +299,7 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
         )}
 
         {/* Footer */}
-        <footer className="text-center text-slate-400 text-sm mt-12 pb-8 border-t border-white/10 pt-8">
+        <footer className="text-center text-slate-400 text-sm mt-12 pb-8 border-t border-white/20 pt-8">
           <p>מופעל על ידי <strong className="text-purple-400">Google Gemini AI</strong></p>
           <p className="mt-1">המידע נשמר באופן מקומי בדפדפן שלך בלבד</p>
         </footer>
@@ -307,3 +307,4 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
     </div>
   );
 }
+
