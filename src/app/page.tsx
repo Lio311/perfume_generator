@@ -178,7 +178,7 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
                   <VenusAndMars className="w-4 h-4 text-purple-400" /> סוג הבושם
                 </Label>
                 <Select value={formData.type} onValueChange={(val) => handleChange("type", val || "")} required>
-                  <SelectTrigger className="bg-background border-border text-foreground focus:ring-purple-500 text-right text-base flex-row-reverse justify-between">
+                  <SelectTrigger className="bg-background border-border text-foreground focus:ring-purple-500 text-right text-base justify-between">
                     <SelectValue placeholder="בחר סוג" />
                   </SelectTrigger>
                   <SelectContent className="bg-background border-border text-foreground" dir="rtl">
@@ -241,8 +241,7 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
                   placeholder="הזן את מפתח ה-API שלך" 
                   required 
                   className="bg-background border-border focus-visible:ring-purple-500 text-foreground placeholder:text-muted-foreground text-right"
-                  dir="auto"
-                />
+                  />
                 <p className="text-xs text-muted-foreground mt-1">
                   <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noreferrer" className="text-purple-400 hover:underline">
                     קבל מפתח API חינמי
@@ -307,6 +306,8 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
     </div>
   );
 }
+
+
 
 
 
