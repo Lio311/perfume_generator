@@ -128,7 +128,7 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
   };
 
   return (
-    <div className="relative min-h-screen text-slate-100" dir="rtl" ref={containerRef}>
+    <div className="relative min-h-screen text-foreground" dir="rtl" ref={containerRef}>
       {/* Background Animation */}
       <div className="bg-animation">
         {[1, 2, 3, 4, 5].map(i => <div key={i} className="bubble"></div>)}
@@ -143,15 +143,15 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
               מחולל תיאורי בשמים
             </h1>
           </div>
-          <p className="text-lg text-slate-200 font-light">
+          <p className="text-lg text-foreground font-light">
             צור תיאורים מקצועיים ויצירתיים לבשמים באמצעות בינה מלאכותית
           </p>
         </header>
 
         {/* Form Card */}
-        <Card className="card-anim glass-card border-white/20 mb-8 bg-slate-900/60">
+        <Card className="card-anim shadow-lg border border-border mb-8 bg-card">
           <CardHeader>
-            <CardTitle className="text-2xl flex items-center gap-2 text-white">
+            <CardTitle className="text-2xl flex items-center gap-2 text-foreground">
               <Sparkles className="w-6 h-6 text-purple-400" />
               פרטי הבושם
             </CardTitle>
@@ -160,7 +160,7 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
             <form onSubmit={handleGenerate} className="space-y-6">
               
               <div className="space-y-2 text-right">
-                <Label htmlFor="perfumeName" className="flex items-center gap-2 text-slate-200">
+                <Label htmlFor="perfumeName" className="flex items-center gap-2 text-foreground">
                   <Tag className="w-4 h-4 text-purple-400" /> שם הבושם
                 </Label>
                 <Input 
@@ -169,19 +169,19 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
                   onChange={(e) => handleChange("name", e.target.value)}
                   placeholder="לדוגמה: Midnight Rose" 
                   required 
-                  className="bg-slate-800/60 border-white/20 focus-visible:ring-purple-500 text-white placeholder:text-slate-400 text-right"
+                  className="bg-background border-border focus-visible:ring-purple-500 text-foreground placeholder:text-muted-foreground text-right"
                 />
               </div>
 
               <div className="space-y-2 text-right">
-                <Label className="flex items-center gap-2 text-slate-200">
+                <Label className="flex items-center gap-2 text-foreground">
                   <VenusAndMars className="w-4 h-4 text-purple-400" /> סוג הבושם
                 </Label>
                 <Select value={formData.type} onValueChange={(val) => handleChange("type", val || "")} required>
-                  <SelectTrigger className="bg-slate-800/60 border-white/20 text-white focus:ring-purple-500 text-right text-base flex-row-reverse justify-between">
+                  <SelectTrigger className="bg-background border-border text-foreground focus:ring-purple-500 text-right text-base flex-row-reverse justify-between">
                     <SelectValue placeholder="בחר סוג" />
                   </SelectTrigger>
-                  <SelectContent className="bg-slate-800 border-white/20 text-white" dir="rtl">
+                  <SelectContent className="bg-background border-border text-foreground" dir="rtl">
                     <SelectItem value="לנשים">לנשים</SelectItem>
                     <SelectItem value="לגברים">לגברים</SelectItem>
                     <SelectItem value="יוניסקס">יוניסקס</SelectItem>
@@ -190,7 +190,7 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
               </div>
 
               <div className="space-y-2 text-right">
-                <Label htmlFor="perfumeNotes" className="flex items-center gap-2 text-slate-200">
+                <Label htmlFor="perfumeNotes" className="flex items-center gap-2 text-foreground">
                   <Leaf className="w-4 h-4 text-purple-400" /> תווי ריח עיקריים
                 </Label>
                 <Textarea 
@@ -199,12 +199,12 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
                   onChange={(e) => handleChange("notes", e.target.value)}
                   placeholder="לדוגמה: ורד, וניל, עץ סנדל, ברגמוט" 
                   required 
-                  className="bg-slate-800/60 border-white/20 focus-visible:ring-purple-500 text-white min-h-[80px] placeholder:text-slate-400 text-right"
+                  className="bg-background border-border focus-visible:ring-purple-500 text-foreground min-h-[80px] placeholder:text-muted-foreground text-right"
                 />
               </div>
 
               <div className="space-y-2 text-right">
-                <Label htmlFor="perfumeOccasion" className="flex items-center gap-2 text-slate-200">
+                <Label htmlFor="perfumeOccasion" className="flex items-center gap-2 text-foreground">
                   <CalendarDays className="w-4 h-4 text-purple-400" /> אירוע/עונה
                 </Label>
                 <Input 
@@ -212,12 +212,12 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
                   value={formData.occasion}
                   onChange={(e) => handleChange("occasion", e.target.value)}
                   placeholder="לדוגמה: ערב, קיץ, יום יום" 
-                  className="bg-slate-800/60 border-white/20 focus-visible:ring-purple-500 text-white placeholder:text-slate-400 text-right"
+                  className="bg-background border-border focus-visible:ring-purple-500 text-foreground placeholder:text-muted-foreground text-right"
                 />
               </div>
 
               <div className="space-y-2 text-right">
-                <Label htmlFor="additionalInfo" className="flex items-center gap-2 text-slate-200">
+                <Label htmlFor="additionalInfo" className="flex items-center gap-2 text-foreground">
                   <Info className="w-4 h-4 text-purple-400" /> מידע נוסף (אופציונלי)
                 </Label>
                 <Textarea 
@@ -225,12 +225,12 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
                   value={formData.additionalInfo}
                   onChange={(e) => handleChange("additionalInfo", e.target.value)}
                   placeholder="כל מידע נוסף שתרצה להוסיף..." 
-                  className="bg-slate-800/60 border-white/20 focus-visible:ring-purple-500 text-white placeholder:text-slate-400 text-right"
+                  className="bg-background border-border focus-visible:ring-purple-500 text-foreground placeholder:text-muted-foreground text-right"
                 />
               </div>
 
-              <div className="space-y-2 pt-4 border-t border-white/20 text-right">
-                <Label htmlFor="apiKey" className="flex items-center gap-2 text-slate-200">
+              <div className="space-y-2 pt-4 border-t border-border text-right">
+                <Label htmlFor="apiKey" className="flex items-center gap-2 text-foreground">
                   <Key className="w-4 h-4 text-purple-400" /> Google Gemini API Key
                 </Label>
                 <Input 
@@ -240,10 +240,10 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
                   onChange={(e) => handleChange("apiKey", e.target.value)}
                   placeholder="הזן את מפתח ה-API שלך" 
                   required 
-                  className="bg-slate-800/60 border-white/20 focus-visible:ring-purple-500 text-white placeholder:text-slate-400 text-right"
+                  className="bg-background border-border focus-visible:ring-purple-500 text-foreground placeholder:text-muted-foreground text-right"
                   dir="ltr"
                 />
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noreferrer" className="text-purple-400 hover:underline">
                     קבל מפתח API חינמי
                   </a>
@@ -253,7 +253,7 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
               <Button 
                 type="submit" 
                 disabled={isGenerating}
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-6 rounded-xl shadow-[0_4px_16px_rgba(139,92,246,0.3)] hover:shadow-[0_6px_24px_rgba(139,92,246,0.4)] transition-all duration-300 text-lg border-0"
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-foreground font-semibold py-6 rounded-xl shadow-[0_4px_16px_rgba(139,92,246,0.3)] hover:shadow-[0_6px_24px_rgba(139,92,246,0.4)] transition-all duration-300 text-lg border-0"
               >
                 {isGenerating ? (
                   <><Loader2 className="w-5 h-5 ml-2 animate-spin" /> יוצר תיאור...</>
@@ -267,29 +267,29 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
 
         {/* Output Section */}
         {generatedText && (
-          <Card id="outputSection" className="output-anim glass-card border-white/20 mb-8 bg-slate-900/60">
-            <CardHeader className="flex flex-row items-center justify-between border-b border-white/5 pb-4">
-              <CardTitle className="text-xl flex items-center gap-2 text-white">
+          <Card id="outputSection" className="output-anim shadow-lg border border-border mb-8 bg-card">
+            <CardHeader className="flex flex-row items-center justify-between border-b border-border pb-4">
+              <CardTitle className="text-xl flex items-center gap-2 text-foreground">
                 <Sparkles className="w-5 h-5 text-purple-400" /> התיאור שנוצר
               </CardTitle>
               <Button 
                 variant="outline" 
                 size="sm" 
                 onClick={handleCopy}
-                className="bg-slate-800/60 border-white/20 hover:bg-white/10 text-white"
+                className="bg-background border-border hover:bg-white/10 text-foreground"
               >
                 {isCopied ? <span className="text-green-400">הועתק!</span> : <><Copy className="w-4 h-4 ml-2" /> העתק</>}
               </Button>
             </CardHeader>
             <CardContent className="pt-6">
-              <div className="bg-slate-900/60 rounded-xl p-6 mb-6 text-slate-200 whitespace-pre-wrap leading-relaxed border border-white/5 text-right">
+              <div className="bg-card rounded-xl p-6 mb-6 text-foreground whitespace-pre-wrap leading-relaxed border border-border text-right">
                 {generatedText}
               </div>
               <div className="flex justify-center">
                 <Button 
                   variant="secondary" 
                   onClick={handleNew}
-                  className="bg-white/10 hover:bg-white/20 text-white border-white/20 border"
+                  className="bg-white/10 hover:bg-white/20 text-foreground border-border border"
                 >
                   <RefreshCw className="w-4 h-4 ml-2" /> צור תיאור חדש
                 </Button>
@@ -299,7 +299,7 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
         )}
 
         {/* Footer */}
-        <footer className="text-center text-slate-400 text-sm mt-12 pb-8 border-t border-white/20 pt-8">
+        <footer className="text-center text-muted-foreground text-sm mt-12 pb-8 border-t border-border pt-8">
           <p>מופעל על ידי <strong className="text-purple-400">Google Gemini AI</strong></p>
           <p className="mt-1">המידע נשמר באופן מקומי בדפדפן שלך בלבד</p>
         </footer>
@@ -307,4 +307,5 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
     </div>
   );
 }
+
 
