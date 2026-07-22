@@ -241,7 +241,7 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
                   placeholder="הזן את מפתח ה-API שלך" 
                   required 
                   className="bg-background border-border focus-visible:ring-purple-500 text-foreground placeholder:text-muted-foreground text-right"
-                  dir="ltr"
+                  dir="auto"
                 />
                 <p className="text-xs text-muted-foreground mt-1">
                   <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noreferrer" className="text-purple-400 hover:underline">
@@ -307,6 +307,7 @@ ${formData.additionalInfo ? `מידע נוסף: ${formData.additionalInfo}` : ''
     </div>
   );
 }
+
 
 
 
