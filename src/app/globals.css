@@ -1,26 +1,126 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --background: oklch(0.2 0 250);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(1 0 0 / 5%);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(1 0 0 / 10%);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.6 0.2 280);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(1 0 0 / 10%);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(1 0 0 / 10%);
+  --muted-foreground: oklch(0.7 0 0);
+  --accent: oklch(0.6 0.2 280);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.6 0.2 20);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.6 0.2 280);
+  --radius: 1rem;
+}
+
+.dark {
+  --background: oklch(0.2 0 250);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(1 0 0 / 5%);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(1 0 0 / 10%);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.6 0.2 280);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(1 0 0 / 10%);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(1 0 0 / 10%);
+  --muted-foreground: oklch(0.7 0 0);
+  --accent: oklch(0.6 0.2 280);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.6 0.2 20);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.6 0.2 280);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ===== Custom Styles ===== */
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(139, 92, 246, 0.2);
+}
+
+.bg-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bubble {
+  position: absolute;
+  bottom: -100px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.5) 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0.1;
+  animation: rise 15s infinite ease-in-out;
+}
+
+.bubble:nth-child(1) { width: 80px; height: 80px; left: 10%; animation-delay: 0s; animation-duration: 12s; }
+.bubble:nth-child(2) { width: 120px; height: 120px; left: 30%; animation-delay: 2s; animation-duration: 16s; }
+.bubble:nth-child(3) { width: 60px; height: 60px; left: 50%; animation-delay: 4s; animation-duration: 14s; }
+.bubble:nth-child(4) { width: 100px; height: 100px; left: 70%; animation-delay: 1s; animation-duration: 18s; }
+.bubble:nth-child(5) { width: 90px; height: 90px; left: 90%; animation-delay: 3s; animation-duration: 15s; }
+
+@keyframes rise {
+  0% { bottom: -100px; transform: translateX(0) scale(1); }
+  50% { transform: translateX(100px) scale(1.2); }
+  100% { bottom: 110vh; transform: translateX(-50px) scale(0.8); }
 }
