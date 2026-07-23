@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מחולל תיאורי בשמים | AI Perfume Generator</title>
+    <meta name="description" content="צור תיאורים מקצועיים ויצירתיים לבשמים באמצעות בינה מלאכותית">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Assistant:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-spray-can"></i>
+                <h1>מחולל תיאורי בשמים</h1>
+            </div>
+            <p class="subtitle">צור תיאורים מקצועיים ויצירתיים לבשמים באמצעות בינה מלאכותית</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Input Section -->
+            <section class="input-section glass-card">
+                <h2><i class="fas fa-edit"></i> פרטי הבושם</h2>
+                
+                <form id="perfumeForm">
+                    <div class="form-group">
+                        <label for="perfumeName">
+                            <i class="fas fa-tag"></i>
+                            שם הבושם
+                        </label>
+                        <input 
+                            type="text" 
+                            id="perfumeName" 
+                            placeholder="לדוגמה: Midnight Rose"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="perfumeType">
+                            <i class="fas fa-venus-mars"></i>
+                            סוג הבושם
+                        </label>
+                        <select id="perfumeType" required>
+                            <option value="">בחר סוג</option>
+                            <option value="לנשים">לנשים</option>
+                            <option value="לגברים">לגברים</option>
+                            <option value="יוניסקס">יוניסקס</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="perfumeNotes">
+                            <i class="fas fa-leaf"></i>
+                            תווי ריח עיקריים
+                        </label>
+                        <textarea 
+                            id="perfumeNotes" 
+                            rows="3"
+                            placeholder="לדוגמה: ורד, וניל, עץ סנדל, ברגמוט"
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="perfumeOccasion">
+                            <i class="fas fa-calendar-alt"></i>
+                            אירוע/עונה
+                        </label>
+                        <input 
+                            type="text" 
+                            id="perfumeOccasion" 
+                            placeholder="לדוגמה: ערב, קיץ, יום יום"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="additionalInfo">
+                            <i class="fas fa-info-circle"></i>
+                            מידע נוסף (אופציונלי)
+                        </label>
+                        <textarea 
+                            id="additionalInfo" 
+                            rows="2"
+                            placeholder="כל מידע נוסף שתרצה להוסיף..."
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="apiKey">
+                            <i class="fas fa-key"></i>
+                            Google Gemini API Key
+                            <span class="info-tooltip" title="מפתח API נדרש לשימוש בשירות. ניתן לקבל מפתח חינמי מ-Google AI Studio">
+                                <i class="fas fa-question-circle"></i>
+                            </span>
+                        </label>
+                        <input 
+                            type="password" 
+                            id="apiKey" 
+                            placeholder="הזן את מפתח ה-API שלך"
+                            required
+                        >
+                        <small class="help-text">
+                            <a href="https://makersuite.google.com/app/apikey" target="_blank">
+                                <i class="fas fa-external-link-alt"></i>
+                                קבל מפתח API חינמי
+                            </a>
+                        </small>
+                    </div>
+
+                    <button type="submit" class="btn-generate" id="generateBtn">
+                        <i class="fas fa-magic"></i>
+                        <span>צור תיאור</span>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Output Section -->
+            <section class="output-section glass-card" id="outputSection" style="display: none;">
+                <div class="output-header">
+                    <h2><i class="fas fa-sparkles"></i> התיאור שנוצר</h2>
+                    <button class="btn-copy" id="copyBtn">
+                        <i class="fas fa-copy"></i>
+                        העתק
+                    </button>
+                </div>
+                
+                <div class="output-content" id="outputContent">
+                    <!-- Generated content will appear here -->
+                </div>
+
+                <div class="output-actions">
+                    <button class="btn-secondary" id="newGenerationBtn">
+                        <i class="fas fa-redo"></i>
+                        צור תיאור חדש
+                    </button>
+                </div>
+            </section>
+
+            <!-- Loading Indicator -->
+            <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>יוצר תיאור מקצועי...</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>מופעל על ידי <strong>Google Gemini AI</strong></p>
+            <p class="footer-note">המידע נשמר באופן מקומי בדפדפן שלך בלבד</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
